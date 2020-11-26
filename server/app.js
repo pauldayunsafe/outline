@@ -6,6 +6,7 @@ import helmet, {
   dnsPrefetchControl,
   referrerPolicy,
 } from 'koa-helmet';
+import router from 'koa-router';
 import logger from 'koa-logger';
 import mount from 'koa-mount';
 import enforceHttps from 'koa-sslify';
@@ -110,6 +111,15 @@ if (process.env.SENTRY_DSN) {
     });
   });
 }
+
+// add redirect for cookie url error
+var _ = router();
+_.get('/undefined', (ctx) => {
+  console.log("redirect worked")
+  ctx.redirect('/');
+});
+app.use(_.routes());
+// end of redirect fix
 
 app.use(mount('/auth', auth));
 app.use(mount('/api', api));
